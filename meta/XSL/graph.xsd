@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://mergebench.org/ns"
+           xmlns="http://mergebench.org/ns"
+           xmlns:mergebench="http://mergebench.org/ns"
+           elementFormDefault="qualified">
+
+    <xs:element name="Graph">
+        <xs:complexType>
+            <xs:sequence>
+
+                <xs:element name="Group" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+
+                            <xs:element name="Node" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Property" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:attribute name="name" type="xs:anyURI" use="required"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" type="xs:anyURI" use="required"/>
+                                </xs:complexType>
+                            </xs:element>
+
+                        </xs:sequence>
+                        
+                    <xs:attribute name="name" type="xs:anyURI" use="required"/>
+
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="DirectedEdge" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="start" type="xs:anyURI" use="required"/>
+                        <xs:attribute name="end" type="xs:anyURI" use="required"/>
+                        <xs:attribute name="semantics" type="xs:anyURI" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+
+            </xs:sequence>
+        </xs:complexType>
+
+        <!-- Global Value & Reference Constraints -->
+
+        <xs:key name="ReferenceableElement">
+            <xs:selector xpath=".//mergebench:Node|.//mergebench:Group" />
+            <xs:field xpath="@name" />
+        </xs:key>
+
+        <xs:keyref name="EdgeStartReference" refer="ReferenceableElement">
+            <xs:selector xpath=".//mergebench:DirectedEdge" />
+            <xs:field xpath="@start" />
+        </xs:keyref>
+
+        <xs:keyref name="EdgeEndReference" refer="ReferenceableElement">
+            <xs:selector xpath=".//mergebench:DirectedEdge" />
+            <xs:field xpath="@end" />
+        </xs:keyref>
+
+        <xs:unique name="UniqueName">
+            <xs:selector xpath=".//mergebench:Node|.//mergebench:Group"/>
+            <xs:field xpath="@name" />
+        </xs:unique>
+
+    </xs:element>
+
+</xs:schema>

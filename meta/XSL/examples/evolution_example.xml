@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Evolution xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://mergebench.org/ns"
+          xsi:schemaLocation="http://mergebench.org/ns ../operations.xsd">
+
+    <SemanticEdit index="0">
+        <Semantic>
+            <Category>REPURPOSE</Category>
+            <Description>
+                Change the names of the pets.
+                The model is migrated for a new customer with different pets.
+            </Description>
+        </Semantic>
+        <RenameNode index="0" oldNodeName="dog" newNodeName="mouse" />
+        <RenameNode index="1" oldNodeName="cat" newNodeName="hamster" />
+    </SemanticEdit>
+
+    <SemanticEdit index="1">
+        <Semantic>
+            <Category>SIMPLYFY</Category>
+            <Description>
+                Remove the age property from the pets.
+                The new customer does not need to know the age of the pets.
+            </Description>
+        </Semantic>
+        <DeleteProperty index="0" nodeName="mouse" propertyName="age" />
+        <DeleteProperty index="1" nodeName="hamster" propertyName="age" />
+    </SemanticEdit>
+
+</Evolution>

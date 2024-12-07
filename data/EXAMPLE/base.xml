@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Graph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://mergebench.org/ns"
+          xsi:schemaLocation="http://mergebench.org/ns ../../meta/XSL/graph.xsd">
+
+    <Group name="pets">
+        <Node name="cat">
+            <Property name="name"/>
+            <Property name="age"/>
+        </Node>
+        <Node name="dog">
+            <Property name="name"/>
+            <Property name="age"/>
+        </Node>
+    </Group>
+
+    <Group name="humans">
+            <Node name="parent" />
+            <Node name="child" />
+    </Group>
+
+    <DirectedEdge start="cat" end="dog" semantics="likes"/>
+    <DirectedEdge start="parent" end="child" semantics="take_care_of"/>
+    <DirectedEdge start="humans" end="pets" semantics="take_care_of" />
+
+</Graph>

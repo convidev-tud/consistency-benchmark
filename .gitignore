@@ -1,0 +1,4 @@
+*.code-workspace
+.venv/
+gen/
+!gen/README.md
