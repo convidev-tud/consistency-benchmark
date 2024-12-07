@@ -1,4 +1,5 @@
 *.code-workspace
 .venv/
-gen/
+gen/*
+!gen/.gitkeep
 !gen/README.md
