@@ -28,6 +28,9 @@ jobs:
         # The Java version to set up. Takes a whole or semver Java version. See examples of supported syntax in README file
         java-version: 21
         distribution: temurin
+
+    - name: Setup Graphviz
+      run: sudo apt-get install -y graphviz 
       
     - name: Run generate.sh
       run: ./generate.sh
