@@ -161,11 +161,11 @@ The remainder of the evolution model is empty. This example models an empty mode
 The file ``evolution_b`` contains a number of operations. The operations are grouped into *SemanticEdit*s whith a *Category* and *Description*.
 
 * An *Evolution* contains 0..n *SemanticEdit* elements.
-* A *SemanticEdit* contains 0..n **ChangeOperations**.
-  * A *SemanticEdit groups ChangeOperations that aim to fulfill a common goal, for example achieving a certain high-level refactoring operation.
+* A *SemanticEdit* contains 1..n *Operation*s.
+  * A *SemanticEdit groups *Operation*s that aim to fulfill a common goal, for example achieving a certain high-level refactoring operation.
   * A *SemanticEdit* has a *Category* classifying the purpose. The ``operations.xsd`` metamodel contains the full list of possible categorties.
   * A *SemanticEdit* has a *Description*. This is a free text string to describe in huma-readable text the purpose of the edit.
-* A **ChangeOperation** is one of the following elements. Please take their exact descriptions and fields from the ``operations.xsd``.
+* An *Operation* must wraps one of the following elements. Please take their exact descriptions and fields from the ``operations.xsd``.
   * *DeleteNode*
   * *DeleteDirectedEdge*
   * *DeleteGroup*
@@ -181,7 +181,9 @@ The file ``evolution_b`` contains a number of operations. The operations are gro
   * *MoveNodeToOtherGroup*
   * *JoinGroups*
 
-XML is somewhat annoying when it comes to ordering. It is not possible to add the change operations in their actual execution order to a *SemanticEdit*. Instead, the above ordering must be kept. To cope with that, each *SemanticEdit* and each **ChangeOperation** has an index of type int. 
+Each *SemanticEdit* and each *Operation* has an index field of type int to avoid ambiguities and ease transformations. The index must reflext the execution order. Our tooling interprets the index with higher priority as the physical ordering. But please keep physical ordering and index ordering consistent.
+
+The following example evolution modifies the above presented examplary graph.
 
 ```XML
 <SemanticEdit index="0">
@@ -192,8 +194,12 @@ XML is somewhat annoying when it comes to ordering. It is not possible to add th
       The model is migrated for a new customer with different pets.
     </Description>
   </Semantic>
-  <RenameNode index="0" oldNodeName="dog" newNodeName="mouse" />
-  <RenameNode index="1" oldNodeName="cat" newNodeName="hamster" />
+  <Operation index="0">
+    <RenameNode oldNodeName="dog" newNodeName="mouse" />
+  </Operation>
+  <Operation index="1">
+    <RenameNode oldNodeName="cat" newNodeName="hamster" />
+  </Operation>
 </SemanticEdit>
 
 <SemanticEdit index="1">
@@ -204,7 +210,13 @@ XML is somewhat annoying when it comes to ordering. It is not possible to add th
       The new customer does not need to know the age of the pets.
     </Description>
   </Semantic>
-  <DeleteProperty index="0" nodeName="mouse" propertyName="age" />
-  <DeleteProperty index="1" nodeName="hamster" propertyName="age" />
+  <Operation index="0">
+    <DeleteProperty nodeName="mouse" propertyName="age" />
+  </Operation>
+  <Operation index="1">
+    <DeleteProperty nodeName="hamster" propertyName="age" />
+  </Operation>
 </SemanticEdit>
 ```
+
+The evolution contains two *SemanticEdit*s. The first performs a *REPURPOSE* modification and the second one a *SIMPLIFY* modification. Both *SemanticEdit*s have a short human readable *Description*. In summary, the first edit changes the animal types "cat" and "dog" to "hamster" and "mouse". The second edit simplifies the model by removing the "age" property from both animal types.
