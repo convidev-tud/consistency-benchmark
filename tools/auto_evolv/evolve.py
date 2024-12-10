@@ -396,6 +396,7 @@ def parse_and_apply_operations(input_root, graph: Graph):
     
     semantic_edits = {}
     current_semantic_edit_index = None
+    current_operation_index = None
     
     print("--------------------")
     print("Parsing and applying operations")
@@ -407,17 +408,22 @@ def parse_and_apply_operations(input_root, graph: Graph):
                 index = str(elem.get("index"))
                 current_semantic_edit_index = index
                 semantic_edits[index] = {}
-            
+            if tag == "Operation":
+                current_operation_index = str(elem.get("index"))
             if tag in operations:
                 print("Operation: %s" % tag)
                 if current_semantic_edit_index is None:
                     raise Exception("Operation found outside of a SemanticEdit tag")
-                operation_index = str(elem.get("index"))
+                if current_operation_index is None:
+                    raise Exception("Operation found outside of an Operation tag")
+                operation_index = current_operation_index
                 semantic_edits[current_semantic_edit_index][operation_index] = elem
             
         if action == "end":
             if tag == "SemanticEdit":
                 current_semantic_edit_index = None
+            if tag == "Operation":
+                current_operation_index = None
                 
     semantic_edit_indices: list[int] = [int(index) for index in semantic_edits.keys()]
     semantic_edit_indices.sort()

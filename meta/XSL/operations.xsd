@@ -41,144 +41,139 @@
                             </xs:complexType>
                         </xs:element>
 
-
-                        <!-- DELETIONS -->
-
-                        <!-- delete a node, the all of the node's properties must be deleted beforehand -->
-                        <xs:element name="DeleteNode" minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="Operation" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
+                                <xs:choice>
+                                
+                                    <!-- DELETIONS -->
+
+                                    <!-- delete a node, the all of the node's properties must be deleted beforehand -->
+                                    <xs:element name="DeleteNode">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- delete a directed edge (revertible) -->
+                                    <xs:element name="DeleteDirectedEdge">
+                                        <xs:complexType>
+                                            <xs:attribute name="start" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="end" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="semantics" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- delete a group, all elements within the group must be removed or moved in edits with smaller indices (revertible) -->
+                                    <xs:element name="DeleteGroup">
+                                        <xs:complexType>
+                                            <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- remove paroperty from a specified node. This is not ambigious as both node and properties are unique-->
+                                    <xs:element name="DeleteProperty">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="propertyName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+
+                                    <!-- Additions -->
+
+                                    <!-- add a new node to an existing group -->
+                                    <xs:element name="AddNode">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- add a new directed edge. connected nodes must already exist -->
+                                    <xs:element name="AddDirectedEdge">
+                                        <xs:complexType>
+                                            <xs:attribute name="start" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="end" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="semantics" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- add a new group -->
+                                    <xs:element name="AddGroup">
+                                        <xs:complexType>
+                                            <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- Modifications / Renamings -->
+
+                                    <!-- rename a property, this should not be used to repurpose a property but only in the context of refactoring or domain transfer -->
+                                    <xs:element name="RenameProperty">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="oldPropertyName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newPropertyName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!--Add Property-->
+                                    <xs:element name="AddProperty">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="propertyName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- rename a group, this should not be used to repurpose a group but only in the context of refactoring or domain transfer -->
+                                    <xs:element name="RenameGroup">
+                                        <xs:complexType>
+                                            <xs:attribute name="oldGroupName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- rename a node, this should not be used to repurpose a node but only in the context of refactoring or domain transfer -->
+                                    <xs:element name="RenameNode">
+                                        <xs:complexType>
+                                            <xs:attribute name="oldNodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newNodeName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- change the semanitcs label of a directed edge, this should not be used for repurposing but for refining, abstracting or domain transfer -->
+                                    <xs:element name="ChangeSemanticsDirectedEdge">
+                                        <xs:complexType>
+                                            <xs:attribute name="start" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="end" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="oldSemantics" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newSemantics" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- Modifications / Complex Actions -->
+
+                                    <!-- move a node from one group to another, both groups must exist -->
+                                    <xs:element name="MoveNodeToOtherGroup">
+                                        <xs:complexType>
+                                            <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="oldGroupName" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+
+                                    <!-- join/merge two groups under a new name, this combines the two sets of nodes into a new set -->
+                                    <xs:element name="JoinGroups">
+                                        <xs:complexType>
+                                            <xs:attribute name="group1Name" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="group2Name" type="xs:anyURI" use="required"/>
+                                            <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
+                                        </xs:complexType>
+                                    </xs:element>
+                                
+                                </xs:choice>
+
                                 <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- delete a directed edge (revertible) -->
-                        <xs:element name="DeleteDirectedEdge" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="start" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="end" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="semantics" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- delete a group, all elements within the group must be removed or moved in edits with smaller indices (revertible) -->
-                        <xs:element name="DeleteGroup" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- remove paroperty from a specified node. This is not ambigious as both node and properties are unique-->
-                        <xs:element name="DeleteProperty" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="propertyName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-
-                        <!-- Additions -->
-
-                        <!-- add a new node to an existing group -->
-                        <xs:element name="AddNode" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- add a new directed edge. connected nodes must already exist -->
-                        <xs:element name="AddDirectedEdge" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="start" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="end" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="semantics" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- add a new group -->
-                        <xs:element name="AddGroup" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="groupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- Modifications / Renamings -->
-
-                        <!-- rename a property, this should not be used to repurpose a property but only in the context of refactoring or domain transfer -->
-                        <xs:element name="RenameProperty" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="oldPropertyName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newPropertyName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!--Add Property-->
-                        <xs:element name="AddProperty" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="propertyName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- rename a group, this should not be used to repurpose a group but only in the context of refactoring or domain transfer -->
-                        <xs:element name="RenameGroup" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="oldGroupName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- rename a node, this should not be used to repurpose a node but only in the context of refactoring or domain transfer -->
-                        <xs:element name="RenameNode" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="oldNodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newNodeName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- change the semanitcs label of a directed edge, this should not be used for repurposing but for refining, abstracting or domain transfer -->
-                        <xs:element name="ChangeSemanticsDirectedEdge" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="start" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="end" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="oldSemantics" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newSemantics" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- Modifications / Complex Actions -->
-
-                        <!-- move a node from one group to another, both groups must exist -->
-                        <xs:element name="MoveNodeToOtherGroup" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="nodeName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="oldGroupName" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
-                            </xs:complexType>
-                        </xs:element>
-
-                        <!-- join/merge two groups under a new name, this combines the two sets of nodes into a new set -->
-                        <xs:element name="JoinGroups" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="index" type="xs:int" use="required"/>
-                                <xs:attribute name="group1Name" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="group2Name" type="xs:anyURI" use="required"/>
-                                <xs:attribute name="newGroupName" type="xs:anyURI" use="required"/>
                             </xs:complexType>
                         </xs:element>
 
